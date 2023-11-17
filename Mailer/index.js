@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SendServiceEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const serviceMailTransporter = nodemailer_1.default.createTransport({
-    service: "gmail",
+    service: "smtp.mail.ru",
     port: 465,
     secure: true,
     auth: {
