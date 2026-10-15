@@ -6,12 +6,12 @@
     "node": "24.x"
   },
   "homepage": "/",
-  "main": "bild/index.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node bild/index.js",
+    "start": "node index.js",
     "build": "echo \"No build needed for this server\" && exit 0"
   },
-  "keywords": [],
+  "keywords": ,
   "author": "",
   "license": "ISC",
   "dependencies": {
