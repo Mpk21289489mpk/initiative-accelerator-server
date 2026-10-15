@@ -8,7 +8,7 @@
   "homepage": "/",
   "main": "bild/index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node bild/index.js",
     "build": "echo \"No build needed for this server\" && exit 0"
   },
   "keywords": [],
