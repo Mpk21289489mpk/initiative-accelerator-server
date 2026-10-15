@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "engines": {
-    "node": "16.15.1"
+    "node": "22.x"
   },
   "homepage": "/",
   "main": "bild/index.js",
   "scripts": {
     "start": "node index.js",
-    "build": "tsc --outDir ./"
+    "build": "echo \"No build needed for this server\" && exit 0"
   },
   "keywords": [],
   "author": "",
