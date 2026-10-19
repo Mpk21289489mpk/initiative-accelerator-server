@@ -1,7 +1,6 @@
 {
   "name": "initiative-accelerator-server",
   "version": "1.0.0",
-  "type": "module",
   "dependencies": {
     "@vercel/node": "^2.12.7"
   }
