@@ -1,19 +1,19 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  // --- ГЛАВНОЕ: разрешаем запросы именно с твоего фронта ---
+export default function handler(req: VercelRequest, res: VercelResponse) {
+  // --- ГЛАВНОЕ: CORS для твоего фронта ---
   const allowedOrigin = 'https://initiative-accelerator-front-phi.vercel.app';
   
   res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  // Обработка OPTIONS-запроса (обязательно для CORS)
+  // Обработка предварительного запроса (OPTIONS) — обязательно для CORS
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
-  // ---------------------------------------------------------
+  // ---------------------------------------
 
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -39,7 +39,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json(mockGuest);
   }
 
-  // Дальше идёт логика токена (если нужна)
+  // Логика проверки токена (Bearer)
   const tokenPart = authHeader.split(' ');
   if (tokenPart.length !== 2 || tokenPart[0] !== 'Bearer') {
     return res.status(400).json({ error: 'Invalid Authorization header' });
