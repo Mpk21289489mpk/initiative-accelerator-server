@@ -1,7 +1,20 @@
-// api/get_me.ts
-import type { NextApiRequest, NextApiResponse } from 'next'; // этот импорт можно оставить даже на чистом Vercel Functions — он не сломает сборку
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  // --- CORS: РАЗРЕШАЕМ ЗАПРОСЫ С ТВОЕГО ФРОНТА ---
+  const allowedOrigin = 'https://initiative-accelerator-front-phi.vercel.app';
+  
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // Обработка предварительного запроса (OPTIONS) — обязательно для CORS
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  // --------------------------------------------------
+
   // Разрешаем только GET
   if (req.method !== 'GET') {
     res.setHeader('Allow', ['GET']);
@@ -10,8 +23,24 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   // Извлекаем токен из заголовка Authorization: Bearer <token>
   const authHeader = req.headers.authorization;
+  
+  // Если токена нет — отдаём гостя, чтобы фронтенд сразу заработал и не показывал белый экран
   if (!authHeader) {
-    return res.status(401).json({ error: 'Missing Authorization header' });
+    const mockGuest = {
+      name: 'Гость',
+      surname: '',
+      email: '',
+      id: '',
+      token: '',
+      role: 'default',
+      birth: new Date('2000-01-01').toISOString(),
+      edu_group: null,
+      avatarURI: null,
+      score: 0,
+      email_verified: 0,
+      notifs_checked: 1
+    };
+    return res.status(200).json(mockGuest);
   }
 
   const tokenPart = authHeader.split(' ');
@@ -20,12 +49,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   const token = tokenPart[1];
-
-  // TODO: здесь будет твоя логика валидации токена и получения пользователя из БД
-  // Пока делаем заглушку, чтобы фронтенд сразу заработал
   console.log('Received token:', token);
 
-  // Пример «фейкового» пользователя (удали, когда подключишь БД)
+  // Пример «фейкового» пользователя (замени на реальную логику с БД позже)
   const mockUser = {
     name: 'Test User',
     surname: 'Testerov',
