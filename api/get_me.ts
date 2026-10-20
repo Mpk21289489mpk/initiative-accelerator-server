@@ -1,30 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  // --- CORS: РАЗРЕШАЕМ ЗАПРОСЫ С ТВОЕГО ФРОНТА ---
+  // --- ГЛАВНОЕ: разрешаем запросы именно с твоего фронта ---
   const allowedOrigin = 'https://initiative-accelerator-front-phi.vercel.app';
   
   res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  // Обработка предварительного запроса (OPTIONS) — обязательно для CORS
+  // Обработка OPTIONS-запроса (обязательно для CORS)
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
-  // --------------------------------------------------
+  // ---------------------------------------------------------
 
-  // Разрешаем только GET
   if (req.method !== 'GET') {
-    res.setHeader('Allow', ['GET']);
-    return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  // Извлекаем токен из заголовка Authorization: Bearer <token>
+  // Если токена нет — отдаём гостя (чтобы фронтенд не ломался)
   const authHeader = req.headers.authorization;
-  
-  // Если токена нет — отдаём гостя, чтобы фронтенд сразу заработал и не показывал белый экран
   if (!authHeader) {
     const mockGuest = {
       name: 'Гость',
@@ -43,15 +39,16 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json(mockGuest);
   }
 
+  // Дальше идёт логика токена (если нужна)
   const tokenPart = authHeader.split(' ');
   if (tokenPart.length !== 2 || tokenPart[0] !== 'Bearer') {
-    return res.status(400).json({ error: 'Invalid Authorization header format' });
+    return res.status(400).json({ error: 'Invalid Authorization header' });
   }
 
   const token = tokenPart[1];
-  console.log('Received token:', token);
+  console.log('Token received:', token);
 
-  // Пример «фейкового» пользователя (замени на реальную логику с БД позже)
+  // Возвращаем тестового пользователя
   const mockUser = {
     name: 'Test User',
     surname: 'Testerov',
